@@ -1,10 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { PageHeader, StatusBadge } from "@/components/tms-ui"
 import { orders } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
-import { Plus, Filter, X, MapPin, Navigation } from "lucide-react"
+import { Plus, Filter, X, MapPin, Navigation, PlugZap } from "lucide-react"
 
 type Order = typeof orders[0]
 
@@ -110,6 +111,7 @@ function OrdersTable({ rows, onView, onGeoTrack }: OrdersTableProps) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function OrdersPage() {
+  const router = useRouter()
   const [statusFilter, setStatusFilter] = useState<string>("All")
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [geoOrder, setGeoOrder]           = useState<Order | null>(null)
@@ -124,9 +126,14 @@ export default function OrdersPage() {
         title="Orders"
         description="Manage and track all transport orders"
         actions={
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <Plus className="mr-2 h-4 w-4" /> New Order
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" onClick={() => router.push("/settings/api-setup")}>
+              <PlugZap className="mr-2 h-4 w-4" /> API Setup
+            </Button>
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Plus className="mr-2 h-4 w-4" /> New Order
+            </Button>
+          </div>
         }
       />
 

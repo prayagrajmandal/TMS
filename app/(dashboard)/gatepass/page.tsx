@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import { PageHeader, KpiCard, DataTable } from "@/components/tms-ui"
 import { gatePasses, availableFleet, drivers } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
@@ -9,6 +10,7 @@ import { getRoleLabels } from "@/lib/auth"
 import { Shield, Clock, Plus, X } from "lucide-react"
 
 export default function GatePassPage() {
+  const router = useRouter()
   const { session } = useAuth()
   const [showForm, setShowForm] = useState(false)
   const [records, setRecords] = useState(gatePasses)
@@ -107,16 +109,30 @@ export default function GatePassPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <KpiCard
-          label="Active Gate Passes"
-          value={records.filter((item) => item.approvalStatus === "Approved").length}
-          icon={<Shield className="h-5 w-5" />}
-        />
-        <KpiCard
-          label="Pending Approvals"
-          value={pendingCount}
-          icon={<Clock className="h-5 w-5" />}
-        />
+        <button
+          type="button"
+          onClick={() => router.push("/gatepass/active")}
+          className="rounded-xl text-left transition-transform hover:-translate-y-0.5"
+        >
+          <KpiCard
+            label="Active Gate Passes"
+            value={records.filter((item) => item.approvalStatus === "Approved").length}
+            icon={<Shield className="h-5 w-5" />}
+            className="cursor-pointer border-sky-200 hover:border-sky-300"
+          />
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/gatepass/pending")}
+          className="rounded-xl text-left transition-transform hover:-translate-y-0.5"
+        >
+          <KpiCard
+            label="Pending Approvals"
+            value={pendingCount}
+            icon={<Clock className="h-5 w-5" />}
+            className="cursor-pointer border-sky-200 hover:border-sky-300"
+          />
+        </button>
       </div>
 
       {/* Data Table */}

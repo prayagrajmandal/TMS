@@ -1,11 +1,13 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { PageHeader } from "@/components/tms-ui"
 import { Button } from "@/components/ui/button"
-import { Save, Building2, Mail, MapPin, Key } from "lucide-react"
+import { Save, Building2, Mail, MapPin, Key, PlugZap } from "lucide-react"
 
 export default function SettingsPage() {
+  const router = useRouter()
   const [settings, setSettings] = useState({
     companyName: "NextGen Logistics Pvt. Ltd.",
     contactEmail: "ops@nextgenlogistics.in",
@@ -23,9 +25,14 @@ export default function SettingsPage() {
         title="Settings"
         description="Configure your TMS preferences and integrations"
         actions={
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <Save className="mr-2 h-4 w-4" /> Save Changes
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" onClick={() => router.push("/settings/api-setup")}>
+              <PlugZap className="mr-2 h-4 w-4" /> API Setup
+            </Button>
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Save className="mr-2 h-4 w-4" /> Save Changes
+            </Button>
+          </div>
         }
       />
 
@@ -128,6 +135,30 @@ export default function SettingsPage() {
                 {role}
               </span>
             ))}
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+          <div className="mb-5 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <PlugZap className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-card-foreground">ERP API Integration</h3>
+              <p className="text-xs text-muted-foreground">Connect SAP or another ERP to auto-pull order data</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4 rounded-xl border border-dashed border-border bg-muted/20 p-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-card-foreground">Order Dashboard API Setup</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Configure ERP endpoints, authentication, sync frequency, and field mapping for incoming orders.
+              </p>
+            </div>
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => router.push("/settings/api-setup")}>
+              Open API Setup
+            </Button>
           </div>
         </section>
       </div>

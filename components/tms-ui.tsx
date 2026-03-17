@@ -31,7 +31,12 @@ interface KpiCardProps {
 
 export function KpiCard({ label, value, icon, trend, className }: KpiCardProps) {
   return (
-    <div className={cn("rounded-xl border border-border bg-card p-6 shadow-sm", className)}>
+    <div
+      className={cn(
+        "rounded-xl border border-border bg-card p-6 shadow-sm dark:border-blue-400/40 dark:bg-gradient-to-r dark:from-slate-900 dark:via-blue-950 dark:to-slate-800",
+        className
+      )}
+    >
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-muted-foreground">{label}</p>
         {icon && <div className="text-muted-foreground">{icon}</div>}
@@ -69,6 +74,8 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
     "In Progress": "bg-primary/10 text-primary border-primary/20",
     "Paid": "bg-success/10 text-[#059669] border-success/20",
     "Overdue": "bg-destructive/10 text-destructive border-destructive/20",
+    "Draft": "bg-warning/10 text-[#D97706] border-warning/20",
+    "Connected": "bg-success/10 text-[#059669] border-success/20",
   }
 
   return (

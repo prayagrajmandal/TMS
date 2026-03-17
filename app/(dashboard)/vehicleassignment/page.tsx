@@ -13,7 +13,14 @@ export default function VehicleAssignmentPage() {
   const { session } = useAuth()
   const { assignments, isLoading } = useVehicleAssignments()
 
-  const canAssignVehicle = Boolean(session && (session.roles.includes("admin") || session.roles.includes("head-office")))
+  const canAssignVehicle = Boolean(
+    session &&
+    (
+      session.roles.includes("admin") ||
+      session.roles.includes("head-office") ||
+      session.roles.includes("vehicle-assignment")
+    )
+  )
   const scopedAssignments = session
     ? assignments.filter((assignment) => assignment.organization === session.organization)
     : assignments

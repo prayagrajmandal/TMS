@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { PageHeader, DataTable, StatusBadge } from "@/components/tms-ui"
-import { vehicleDriverVehicles, vehicleDriverDrivers } from "@/lib/mock-data"
+import { PageHeader, DataTable } from "@/components/tms-ui"
+import { vehicleDriverVehicles } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Plus, Car, User, X, CheckCircle } from "lucide-react"
+import { Plus, Car, X, CheckCircle } from "lucide-react"
 
 const vehicleTypeOptions = ["Truck", "Bus", "Office Pickup", "Drop Car", "Mini Truck", "Container"]
 const ownershipOptions = ["Own Vehicle", "3rd Party Vehicle"]
@@ -14,8 +14,6 @@ interface FormData {
   vehicleType: string
   ownership: string
   vehicleNumber: string
-  driverName: string
-  driverMobile: string
   capacity: string
 }
 
@@ -23,8 +21,6 @@ const emptyForm: FormData = {
   vehicleType: "",
   ownership: "",
   vehicleNumber: "",
-  driverName: "",
-  driverMobile: "",
   capacity: "",
 }
 
@@ -43,8 +39,8 @@ export default function VehicleDriverPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Vehicle & Driver"
-        description="Manage vehicle and driver master data"
+        title="Vehicle"
+        description="Manage vehicle master data"
         actions={
           <Button
             className="bg-primary text-primary-foreground hover:bg-primary/90"
@@ -104,23 +100,6 @@ export default function VehicleDriverPage() {
             />
           </div>
 
-          {/* Driver List */}
-          <div>
-            <div className="mb-3 flex items-center gap-2">
-              <User className="h-5 w-5 text-primary" />
-              <h2 className="text-lg font-semibold text-foreground">Driver List</h2>
-              <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                {vehicleDriverDrivers.length}
-              </span>
-            </div>
-            <DataTable
-              columns={["DriverID", "DriverName", "Mobile", "AssignedVehicle", "Status"]}
-              data={vehicleDriverDrivers}
-              actions={[
-                { label: "Edit", onClick: () => {} },
-              ]}
-            />
-          </div>
         </div>
       )}
 
@@ -131,7 +110,7 @@ export default function VehicleDriverPage() {
           {showSuccess && (
             <div className="mb-4 flex items-center gap-3 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm font-medium text-[#059669]">
               <CheckCircle className="h-5 w-5" />
-              Vehicle / Driver details submitted successfully!
+              Vehicle details submitted successfully!
               <button onClick={() => setShowSuccess(false)} className="ml-auto">
                 <X className="h-4 w-4" />
               </button>
@@ -140,10 +119,10 @@ export default function VehicleDriverPage() {
 
           <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
             <h2 className="mb-1 text-lg font-semibold text-card-foreground">
-              Add Vehicle / Driver Details
+              Add Vehicle Details
             </h2>
             <p className="mb-6 text-sm text-muted-foreground">
-              Fill in the details below to register a new vehicle and assign a driver.
+              Fill in the details below to register a new vehicle.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -194,36 +173,6 @@ export default function VehicleDriverPage() {
                   onChange={e => setForm({ ...form, vehicleNumber: e.target.value })}
                   required
                   placeholder="e.g. MH-04-AB-1234"
-                  className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              {/* Driver Name */}
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-card-foreground">
-                  Driver Name <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={form.driverName}
-                  onChange={e => setForm({ ...form, driverName: e.target.value })}
-                  required
-                  placeholder="Full name of the driver"
-                  className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              {/* Driver Mobile */}
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-card-foreground">
-                  Driver Mobile <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="tel"
-                  value={form.driverMobile}
-                  onChange={e => setForm({ ...form, driverMobile: e.target.value })}
-                  required
-                  placeholder="+91 XXXXX XXXXX"
                   className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>

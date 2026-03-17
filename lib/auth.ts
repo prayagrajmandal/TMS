@@ -1,6 +1,6 @@
 "use client"
 
-export type UserRole = "super-admin" | "admin" | "head-office" | "gate" | "maintenance"
+export type UserRole = "super-admin" | "admin" | "head-office" | "gate" | "maintenance" | "vehicle-assignment"
 
 export type AccessRoute =
   | "/dashboard"
@@ -41,7 +41,7 @@ export const accessOptions: NavAccessItem[] = [
   { label: "Route Map", route: "/routemap" },
   { label: "Drivers", route: "/drivers" },
   { label: "Fleet", route: "/fleet" },
-  { label: "Vehicle & Driver", route: "/vehicledriver" },
+  { label: "Vehicle", route: "/vehicledriver" },
   { label: "Maintenance", route: "/maintenance" },
   { label: "Track Scale", route: "/trackscale" },
   { label: "Gate Pass", route: "/gatepass" },
@@ -93,6 +93,7 @@ export const roleLabels: Record<UserRole, string> = {
   "head-office": "Head Office",
   gate: "Gate Pass",
   maintenance: "Maintenance",
+  "vehicle-assignment": "Vehicle Assignment",
 }
 
 const roleDefaultAccess: Record<UserRole, AccessRoute[]> = {
@@ -101,6 +102,7 @@ const roleDefaultAccess: Record<UserRole, AccessRoute[]> = {
   "head-office": accessOptions.map((item) => item.route),
   gate: ["/gatepass", "/vehicleassignment"],
   maintenance: ["/maintenance"],
+  "vehicle-assignment": ["/vehicleassignment"],
 }
 
 export const defaultOrganizations: OrganizationConfig[] = [
@@ -113,6 +115,7 @@ export const defaultDemoUsers: DemoUser[] = [
   { userId: "heado", password: "1234", name: "Head Office", roles: ["head-office"], accessRoutes: roleDefaultAccess["head-office"], organization: "Pro" },
   { userId: "gate1", password: "1234", name: "Gate Officer", roles: ["gate"], accessRoutes: roleDefaultAccess.gate, organization: "Pro" },
   { userId: "maint", password: "1234", name: "Maintenance Officer", roles: ["maintenance"], accessRoutes: roleDefaultAccess.maintenance, organization: "Pro" },
+  { userId: "vehas", password: "1234", name: "Vehicle Assignment Officer", roles: ["vehicle-assignment"], accessRoutes: roleDefaultAccess["vehicle-assignment"], organization: "Pro" },
 ]
 
 function normalizeRoles(roles?: UserRole[]) {

@@ -1,17 +1,35 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { AppSidebar } from "@/components/app-sidebar"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/use-auth"
 import { canAccessRoute, getDefaultRouteForSession } from "@/lib/auth"
+import { cn } from "@/lib/utils"
 import { LogOut } from "lucide-react"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const { session, isLoading, logout } = useAuth()
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
+
+  useEffect(() => {
+    const storedTheme = window.localStorage.getItem("dashboard-theme")
+    if (storedTheme === "dark") {
+      setDarkMode(true)
+      document.documentElement.classList.add("dark")
+      document.body.classList.add("dark")
+    }
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode)
+    document.body.classList.toggle("dark", darkMode)
+    window.localStorage.setItem("dashboard-theme", darkMode ? "dark" : "light")
+  }, [darkMode])
 
   useEffect(() => {
     if (isLoading) {
@@ -39,21 +57,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <AppSidebar session={session} />
-      <main className="flex-1 transition-all duration-300 lg:ml-[280px]">
+    <div className={cn("flex min-h-screen bg-background text-foreground", darkMode && "dark")}>
+      <AppSidebar
+        session={session}
+        collapsed={sidebarCollapsed}
+        onCollapsedChange={setSidebarCollapsed}
+        darkMode={darkMode}
+        onDarkModeChange={setDarkMode}
+      />
+      <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? "lg:ml-[72px]" : "lg:ml-[280px]"}`}>
         <div className="mx-auto max-w-[1600px] p-4 pt-16 lg:p-8 lg:pt-8">
-          <div className="mb-6 grid gap-3 rounded-xl border border-sky-200 bg-sky-100 p-4 shadow-sm sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+          <div
+            className={cn(
+              "mb-6 grid gap-3 rounded-xl border p-4 shadow-sm sm:grid-cols-[1fr_auto_1fr] sm:items-center",
+              darkMode
+                ? "border-blue-400/30 bg-gradient-to-r from-slate-900 via-blue-950 to-red-950"
+                : "border-border bg-card"
+            )}
+          >
             <div className="text-left">
               <p className="text-base font-bold text-card-foreground">{session.name}</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold tracking-wide text-sky-950">{session.organization}</p>
+              <p className="text-2xl font-bold tracking-wide text-card-foreground">{session.organization}</p>
             </div>
             <div className="flex sm:justify-end">
               <Button
                 variant="outline"
-                className="border-pink-200 bg-pink-100 font-semibold text-pink-950 hover:bg-pink-200"
+                className="border-border bg-background font-semibold text-foreground hover:bg-muted"
                 onClick={() => {
                   logout()
                   router.push("/login")

@@ -23,7 +23,7 @@ export default function LoginPage() {
     const storedSession = window.localStorage.getItem(AUTH_STORAGE_KEY);
     if (storedSession) {
       try {
-        const session = JSON.parse(storedSession) as { roles?: Array<'admin' | 'head-office' | 'gate' | 'maintenance'>; role?: 'admin' | 'head-office' | 'gate' | 'maintenance'; accessRoutes?: string[] };
+        const session = JSON.parse(storedSession) as { roles?: Array<'admin' | 'head-office' | 'gate' | 'maintenance' | 'vehicle-assignment'>; role?: 'admin' | 'head-office' | 'gate' | 'maintenance' | 'vehicle-assignment'; accessRoutes?: string[] };
         router.replace(getDefaultRouteForSession({
           roles: session.roles ?? (session.role ? [session.role] : []),
           accessRoutes: (session.accessRoutes ?? []) as never[],

@@ -41,7 +41,14 @@ export default function VehicleAssignmentFormPage() {
     notes: existingAssignment?.notes ?? "",
   }))
 
-  const canAssignVehicle = Boolean(session && (session.roles.includes("admin") || session.roles.includes("head-office")))
+  const canAssignVehicle = Boolean(
+    session &&
+    (
+      session.roles.includes("admin") ||
+      session.roles.includes("head-office") ||
+      session.roles.includes("vehicle-assignment")
+    )
+  )
   const quantityKg = Number(formData.quantityKg || 0)
   const recommendedTruckSize = getRecommendedTruckSize(quantityKg || 1)
   const suggestedVehicles = useMemo(
