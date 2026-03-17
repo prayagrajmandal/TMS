@@ -9,7 +9,6 @@ import {
   clearStoredSession,
   getStoredSession,
   getUserDirectory,
-  storeSession,
 } from "@/lib/auth"
 
 export function useAuth() {
@@ -29,7 +28,6 @@ export function useAuth() {
             accessRoutes: matchingUser.accessRoutes,
             organization: matchingUser.organization,
           }
-          storeSession(nextSession)
           setSession(nextSession)
         } else {
           setSession(currentSession)

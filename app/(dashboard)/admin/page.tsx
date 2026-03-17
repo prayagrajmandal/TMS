@@ -134,7 +134,7 @@ export default function AdminUsersPage() {
           </div>
           <div className="flex flex-col justify-end gap-3">
             <Button
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
               onClick={createUser}
               disabled={!canCreateMoreUsers}
             >
@@ -144,6 +144,11 @@ export default function AdminUsersPage() {
             <p className="text-sm text-muted-foreground">
               {currentUserCount} / {organizationLimit?.maxUsers ?? 0} users used in this organization. Password for new users is `1234`.
             </p>
+            {!canCreateMoreUsers ? (
+              <p className="text-sm font-medium text-destructive">
+                User limit reached for {session?.organization}. Increase the quota from Super Admin or remove/reset a user first.
+              </p>
+            ) : null}
           </div>
         </div>
       </div>
