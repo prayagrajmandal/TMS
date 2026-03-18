@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import { PageHeader, DataTable, StatusBadge } from "@/components/tms-ui"
-import { drivers } from "@/lib/mock-data"
+import { useDrivers, type Driver } from "@/hooks/use-drivers"
 import { Button } from "@/components/ui/button"
-import { Plus, X, Star, Phone, CreditCard, TrendingUp } from "lucide-react"
+import { Plus, X, Star, Phone, CreditCard, TrendingUp, Loader2 } from "lucide-react"
 
 export default function DriversPage() {
-  const [selectedDriver, setSelectedDriver] = useState<typeof drivers[0] | null>(null)
+  const { drivers, isLoading } = useDrivers()
+  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null)
 
   const tableData = drivers.map(d => ({
     DriverID: d.id,
@@ -31,14 +32,20 @@ export default function DriversPage() {
         }
       />
 
-      <DataTable
-        columns={["DriverID", "Name", "Phone", "License", "TripsToday", "Rating", "Status"]}
-        data={tableData}
-        actions={[
-          { label: "Assign Trip", onClick: () => {} },
-          { label: "View", onClick: (row) => setSelectedDriver(drivers.find(d => d.id === row.DriverID) || null) },
-        ]}
-      />
+      {isLoading ? (
+        <div className="flex h-32 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <DataTable
+          columns={["DriverID", "Name", "Phone", "License", "TripsToday", "Rating", "Status"]}
+          data={tableData}
+          actions={[
+            { label: "Assign Trip", onClick: () => {} },
+            { label: "View", onClick: (row) => setSelectedDriver(drivers.find(d => d.id === row.DriverID) || null) },
+          ]}
+        />
+      )}
 
       {/* Driver Profile Modal */}
       {selectedDriver && (

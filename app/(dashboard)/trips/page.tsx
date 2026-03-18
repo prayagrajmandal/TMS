@@ -2,11 +2,13 @@
 
 import { useState } from "react"
 import { PageHeader, DataTable, StatusBadge } from "@/components/tms-ui"
-import { activeTrips, completedTrips } from "@/lib/mock-data"
+import { useTrips } from "@/hooks/use-trips"
+import { Loader2 } from "lucide-react"
 
 const tabs = ["Active", "Completed"] as const
 
 export default function TripsPage() {
+  const { activeTrips, completedTrips, isLoading } = useTrips()
   const [activeTab, setActiveTab] = useState<typeof tabs[number]>("Active")
 
   const activeTableData = activeTrips.map(t => ({
@@ -56,7 +58,11 @@ export default function TripsPage() {
       </div>
 
       {/* Table */}
-      {activeTab === "Active" ? (
+      {isLoading ? (
+        <div className="flex h-32 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : activeTab === "Active" ? (
         <DataTable
           columns={["TripID", "Vehicle", "Driver", "Route", "ETA", "Status"]}
           data={activeTableData}

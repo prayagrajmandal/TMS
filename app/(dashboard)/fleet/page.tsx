@@ -1,11 +1,13 @@
 "use client"
 
 import { PageHeader, DataTable } from "@/components/tms-ui"
-import { fleet } from "@/lib/mock-data"
+import { useFleet } from "@/hooks/use-fleet"
 import { Button } from "@/components/ui/button"
-import { Plus, Car, Truck, AlertTriangle } from "lucide-react"
+import { Plus, Car, Truck, AlertTriangle, Loader2 } from "lucide-react"
 
 export default function FleetPage() {
+  const { fleet, isLoading } = useFleet()
+
   const tableData = fleet.map(v => ({
     VehicleID: v.id,
     Type: v.type,
@@ -82,13 +84,19 @@ export default function FleetPage() {
         </div>
       </div>
 
-      <DataTable
-        columns={["VehicleID", "Type", "Capacity", "CurrentLocation", "LastService", "Status"]}
-        data={tableData}
-        actions={[
-          { label: "View", onClick: () => {} },
-        ]}
-      />
+      {isLoading ? (
+        <div className="flex h-32 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <DataTable
+          columns={["VehicleID", "Type", "Capacity", "CurrentLocation", "LastService", "Status"]}
+          data={tableData}
+          actions={[
+            { label: "View", onClick: () => {} },
+          ]}
+        />
+      )}
     </div>
   )
 }

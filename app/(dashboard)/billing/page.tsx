@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 import { PageHeader, DataTable, KpiCard } from "@/components/tms-ui"
-import { invoices } from "@/lib/mock-data"
+import { useInvoices } from "@/hooks/use-invoices"
 import { Button } from "@/components/ui/button"
-import { Download, Wallet, Clock, AlertTriangle, CheckCircle2, Filter } from "lucide-react"
+import { Download, Wallet, Clock, AlertTriangle, CheckCircle2, Filter, Loader2 } from "lucide-react"
 
 export default function BillingPage() {
+  const { invoices, isLoading } = useInvoices()
   const [statusFilter, setStatusFilter] = useState<string>("All")
 
   const filteredInvoices = statusFilter === "All"
@@ -78,13 +79,19 @@ export default function BillingPage() {
         ))}
       </div>
 
-      <DataTable
-        columns={["InvoiceID", "TripID", "Customer", "Amount", "Status", "CreatedAt"]}
-        data={tableData}
-        actions={[
-          { label: "View", onClick: () => {} },
-        ]}
-      />
+      {isLoading ? (
+        <div className="flex h-32 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <DataTable
+          columns={["InvoiceID", "TripID", "Customer", "Amount", "Status", "CreatedAt"]}
+          data={tableData}
+          actions={[
+            { label: "View", onClick: () => {} },
+          ]}
+        />
+      )}
     </div>
   )
 }

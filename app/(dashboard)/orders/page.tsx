@@ -3,11 +3,9 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { PageHeader, StatusBadge } from "@/components/tms-ui"
-import { orders } from "@/lib/mock-data"
+import { useOrders, type Order } from "@/hooks/use-orders"
 import { Button } from "@/components/ui/button"
-import { Plus, Filter, X, MapPin, Navigation, PlugZap } from "lucide-react"
-
-type Order = typeof orders[0]
+import { Plus, Filter, X, MapPin, Navigation, PlugZap, Loader2 } from "lucide-react"
 
 // ─── Inline custom table (bypasses DataTable's renderCell limitation) ─────────
 const COLUMNS = [
@@ -112,6 +110,7 @@ function OrdersTable({ rows, onView, onGeoTrack }: OrdersTableProps) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function OrdersPage() {
   const router = useRouter()
+  const { orders, isLoading } = useOrders()
   const [statusFilter, setStatusFilter] = useState<string>("All")
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [geoOrder, setGeoOrder]           = useState<Order | null>(null)
@@ -159,11 +158,17 @@ export default function OrdersPage() {
       </div>
 
       {/* Custom table — full control over every cell */}
-      <OrdersTable
-        rows={filteredOrders}
-        onView={setSelectedOrder}
-        onGeoTrack={setGeoOrder}
-      />
+      {isLoading ? (
+        <div className="flex h-32 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <OrdersTable
+          rows={filteredOrders}
+          onView={setSelectedOrder}
+          onGeoTrack={setGeoOrder}
+        />
+      )}
 
       {/* ── GeoTrack Map Modal ─────────────────────────────────────────────── */}
       {geoOrder && (

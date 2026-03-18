@@ -1,19 +1,27 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { PageHeader, KpiCard, DataTable } from "@/components/tms-ui"
-import { gatePasses, availableFleet, drivers } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/use-auth"
 import { getRoleLabels } from "@/lib/auth"
-import { Shield, Clock, Plus, X } from "lucide-react"
+import { Shield, Clock, Plus, X, Loader2 } from "lucide-react"
+
+import { useGatePasses, type GatePass } from "@/hooks/use-gatepasses"
+import { useFleet } from "@/hooks/use-fleet"
+import { useDrivers } from "@/hooks/use-drivers"
 
 export default function GatePassPage() {
   const router = useRouter()
   const { session } = useAuth()
+  
+  const { gatePasses: liveGatePasses, isLoading } = useGatePasses()
+  const { fleet: availableFleet } = useFleet()
+  const { drivers } = useDrivers()
+
   const [showForm, setShowForm] = useState(false)
-  const [records, setRecords] = useState(gatePasses)
+  const [records, setRecords] = useState<GatePass[]>([])
   const [feedback, setFeedback] = useState("")
   const [formData, setFormData] = useState({
     vehicleId: "",
@@ -21,6 +29,10 @@ export default function GatePassPage() {
     purpose: "",
     expectedReturn: "",
   })
+
+  useEffect(() => {
+    setRecords(liveGatePasses)
+  }, [liveGatePasses])
 
   const roleLabel = session ? getRoleLabels(session.roles) : "User"
   const canManageGatePasses = session ? session.roles.includes("admin") || session.accessRoutes.includes("/gatepass") : false
@@ -38,7 +50,7 @@ export default function GatePassPage() {
 
   const availableDrivers = useMemo(
     () => drivers.filter(d => d.status === "Available"),
-    []
+    [drivers]
   )
 
   const handleStatusUpdate = (gatePassId: string, status: "Approved" | "Rejected") => {
@@ -136,25 +148,31 @@ export default function GatePassPage() {
       </div>
 
       {/* Data Table */}
-      <DataTable
-        columns={["GatePassID", "Vehicle", "Driver", "Purpose", "RequestedBy", "ApprovalStatus", "Time"]}
-        data={tableData}
-        actions={
-          canManageGatePasses
-            ? [
-                {
-                  label: "Approve",
-                  onClick: (row) => handleStatusUpdate(String(row.GatePassID), "Approved"),
-                },
-                {
-                  label: "Reject",
-                  onClick: (row) => handleStatusUpdate(String(row.GatePassID), "Rejected"),
-                  variant: "destructive" as const,
-                },
-              ]
-            : undefined
-        }
-      />
+      {isLoading ? (
+        <div className="flex h-32 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <DataTable
+          columns={["GatePassID", "Vehicle", "Driver", "Purpose", "RequestedBy", "ApprovalStatus", "Time"]}
+          data={tableData}
+          actions={
+            canManageGatePasses
+              ? [
+                  {
+                    label: "Approve",
+                    onClick: (row) => handleStatusUpdate(String(row.GatePassID), "Approved"),
+                  },
+                  {
+                    label: "Reject",
+                    onClick: (row) => handleStatusUpdate(String(row.GatePassID), "Rejected"),
+                    variant: "destructive" as const,
+                  },
+                ]
+              : undefined
+          }
+        />
+      )}
 
       {/* Create Gate Pass Form Modal */}
       {showForm && (
