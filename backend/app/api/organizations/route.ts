@@ -1,0 +1,26 @@
+import { NextResponse } from "next/server"
+import type { OrganizationConfig } from "@/lib/auth"
+import { deleteOrganizationInDb, getOrganizationsFromDb, saveOrganizationsToDb } from "@/lib/db-auth"
+
+export async function GET() {
+  const organizations = await getOrganizationsFromDb()
+  return NextResponse.json({ organizations })
+}
+
+export async function POST(request: Request) {
+  const body = (await request.json()) as { organizations?: OrganizationConfig[] }
+  const organizations = Array.isArray(body.organizations) ? body.organizations : []
+  const nextOrganizations = await saveOrganizationsToDb(organizations)
+
+  return NextResponse.json({ organizations: nextOrganizations })
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const body = (await request.json()) as { organizationName?: string }
+    const organizations = await deleteOrganizationInDb(body.organizationName ?? "")
+    return NextResponse.json({ organizations })
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to delete organization" }, { status: 400 })
+  }
+}
