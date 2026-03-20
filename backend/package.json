@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 4000",
-    "build": "next build",
-    "start": "next start -p 4000"
+    "dev": "python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload",
+    "build": "python -m py_compile main.py",
+    "start": "python -m uvicorn main:app --host 0.0.0.0 --port 8000"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",

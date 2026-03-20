@@ -7,6 +7,7 @@ import {
   getStoredSessionToken,
   type AuthSession,
 } from "@/lib/auth"
+import { apiUrl } from "@/lib/api"
 
 export function useAuth() {
   const [session, setSession] = useState<AuthSession | null>(null)
@@ -20,7 +21,7 @@ export function useAuth() {
       return
     }
 
-    const response = await fetch(`/api/auth/session?token=${encodeURIComponent(token)}`, {
+    const response = await fetch(apiUrl(`/api/auth/session?token=${encodeURIComponent(token)}`), {
       cache: "no-store",
     })
 
@@ -52,7 +53,7 @@ export function useAuth() {
     setIsLoading(false)
 
     if (token) {
-      void fetch("/api/auth/logout", {
+      void fetch(apiUrl("/api/auth/logout"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

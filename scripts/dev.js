@@ -4,7 +4,7 @@ const path = require("node:path")
 const root = process.cwd()
 
 function run(name, cwd, args) {
-  const child = spawn("npm.cmd", args, {
+  const child = spawn(args[0], args.slice(1), {
     cwd,
     stdio: "inherit",
     shell: false,
@@ -20,8 +20,8 @@ function run(name, cwd, args) {
   return child
 }
 
-const backend = run("backend", path.join(root, "backend"), ["run", "dev"])
-const frontend = run("frontend", path.join(root, "frontend"), ["run", "dev"])
+const backend = run("backend", root, ["python", "-m", "uvicorn", "main:app", "--app-dir", "backend", "--host", "0.0.0.0", "--port", "8000", "--reload"])
+const frontend = run("frontend", path.join(root, "frontend"), ["npm.cmd", "run", "dev"])
 
 function shutdown() {
   backend.kill()

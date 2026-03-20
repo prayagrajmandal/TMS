@@ -14,7 +14,7 @@ const assignableRoles: UserRole[] = ["admin", "head-office", "gate", "maintenanc
 
 export default function AdminUsersPage() {
   const { session } = useAuth()
-  const { users, isLoading, saveUsers, resetUsers, deleteUser } = useUserDirectory()
+  const { users, isLoading, error, saveUsers, resetUsers, deleteUser } = useUserDirectory()
   const { organizations } = useOrganizations()
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [newUser, setNewUser] = useState({
@@ -154,6 +154,14 @@ export default function AdminUsersPage() {
     return (
       <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-sm">
         Loading users...
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-xl border border-destructive/20 bg-card p-6 text-sm text-destructive shadow-sm">
+        {error}
       </div>
     )
   }

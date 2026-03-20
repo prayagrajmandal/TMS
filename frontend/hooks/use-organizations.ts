@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { ORGANIZATION_EVENT_NAME, type OrganizationConfig } from "@/lib/auth"
+import { apiUrl } from "@/lib/api"
 
 export function useOrganizations() {
   const [organizations, setOrganizations] = useState<OrganizationConfig[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   const syncOrganizations = useCallback(async () => {
-    const response = await fetch("/api/organizations", { cache: "no-store" })
+    const response = await fetch(apiUrl("/api/organizations"), { cache: "no-store" })
     const data = (await response.json()) as { organizations?: OrganizationConfig[] }
     setOrganizations(data.organizations ?? [])
     setIsLoading(false)
@@ -24,7 +25,7 @@ export function useOrganizations() {
   }, [syncOrganizations])
 
   const saveOrganizations = useCallback(async (nextOrganizations: OrganizationConfig[]) => {
-    const response = await fetch("/api/organizations", {
+    const response = await fetch(apiUrl("/api/organizations"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,7 +38,7 @@ export function useOrganizations() {
   }, [])
 
   const resetOrganizations = useCallback(async () => {
-    const response = await fetch("/api/organizations/reset", {
+    const response = await fetch(apiUrl("/api/organizations/reset"), {
       method: "POST",
     })
     const data = (await response.json()) as { organizations?: OrganizationConfig[] }
@@ -46,7 +47,7 @@ export function useOrganizations() {
   }, [])
 
   const deleteOrganization = useCallback(async (organizationName: string) => {
-    const response = await fetch("/api/organizations", {
+    const response = await fetch(apiUrl("/api/organizations"), {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

@@ -3,14 +3,22 @@ const path = require("node:path")
 
 const root = process.cwd()
 
-for (const app of ["backend", "frontend"]) {
-  const result = spawnSync("npm.cmd", ["run", "build"], {
-    cwd: path.join(root, app),
-    stdio: "inherit",
-    shell: false,
-  })
+const backendResult = spawnSync("python", ["-m", "py_compile", path.join("backend", "main.py")], {
+  cwd: root,
+  stdio: "inherit",
+  shell: false,
+})
 
-  if (result.status !== 0) {
-    process.exit(result.status || 1)
-  }
+if (backendResult.status !== 0) {
+  process.exit(backendResult.status || 1)
+}
+
+const frontendResult = spawnSync("npm.cmd", ["run", "build"], {
+  cwd: path.join(root, "frontend"),
+  stdio: "inherit",
+  shell: false,
+})
+
+if (frontendResult.status !== 0) {
+  process.exit(frontendResult.status || 1)
 }

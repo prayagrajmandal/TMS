@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const workspaceRoot = path.resolve(__dirname, "..")
-const backendUrl = process.env.BACKEND_URL || "http://localhost:4000"
+const backendUrl = process.env.BACKEND_URL || "http://127.0.0.1:8000"
 
 const nextConfig = {
   async rewrites() {

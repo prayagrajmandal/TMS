@@ -8,6 +8,7 @@ import {
   storeSessionToken,
   type AuthSession,
 } from '@/lib/auth';
+import { apiUrl } from '@/lib/api';
 import { useUserDirectory } from '@/hooks/use-user-directory';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,7 +37,7 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(apiUrl("/api/auth/login"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +46,20 @@ export default function LoginPage() {
       })
 
       if (!response.ok) {
-        setError('Invalid organization, User ID, or Password.');
+        let message = 'Unable to sign in right now.'
+        try {
+          const data = (await response.json()) as { error?: string }
+          if (response.status === 401) {
+            message = data.error || 'Invalid organization, User ID, or Password.'
+          } else {
+            message = data.error || `Login failed with status ${response.status}.`
+          }
+        } catch {
+          message = response.status === 401
+            ? 'Invalid organization, User ID, or Password.'
+            : `Login failed with status ${response.status}.`
+        }
+        setError(message);
         setLoading(false);
         return;
       }
@@ -53,6 +67,8 @@ export default function LoginPage() {
       const data = (await response.json()) as { token: string; session: AuthSession }
       storeSessionToken(data.token)
       router.push(getDefaultRouteForSession(data.session))
+    } catch {
+      setError('Cannot reach the backend service. Make sure the FastAPI server is running on port 8000.')
     } finally {
       setLoading(false);
     }

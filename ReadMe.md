@@ -3,7 +3,7 @@
 This project is now separated into two apps:
 
 - `frontend/` - Next.js UI application
-- `backend/` - Next.js API application
+- `backend/` - FastAPI Python API application
 
 Run both from the root:
 
